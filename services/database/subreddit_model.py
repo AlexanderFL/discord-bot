@@ -11,13 +11,19 @@ class Subreddits:
         self.filename = filename
         self._create_default_table()
     
-    def connect(self):
+    def _connect(self):
+        """
+        Returns the connection and cursor to the database file
+        """
         conn = sqlite3.connect(self.filename)
         curs = conn.cursor()
         return conn, curs
 
     def _create_default_table(self):
-        conn, c = self.connect()
+        """
+        Creates the table if it does not exists within the database file
+        """
+        conn, c = self._connect()
 
         create_sub_table = ''' CREATE TABLE IF NOT EXISTS subreddits
                                (id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -26,9 +32,12 @@ class Subreddits:
         conn.commit()
         conn.close()
     
-    def insert_subreddit(self, subreddit):
+    def insert_subreddit(self, subreddit: str):
+        """
+        Insert a subreddit into the table from the given string parameter
+        """
         logs = Logs()
-        conn, c = self.connect()
+        conn, c = self._connect()
         argument = (subreddit,)
 
         insert_sub = '''INSERT INTO subreddits(subreddit)
@@ -38,9 +47,12 @@ class Subreddits:
         conn.close()
         logs.insert_log(str(subreddit) + " was added")
     
-    def remove_subreddit(self, subreddit):
+    def remove_subreddit(self, subreddit: str):
+        """
+        Remove a subreddit from the table from the given string parameter
+        """
         logs = Logs()
-        conn, c = self.connect()
+        conn, c = self._connect()
         argument = (subreddit, )
 
         remove_sub = '''DELETE FROM subreddits WHERE subreddit=? '''
@@ -50,7 +62,7 @@ class Subreddits:
         logs.insert_log(str(subreddit) + " was removed")
     
     def print_all(self):
-        conn, c = self.connect()
+        conn, c = self._connect()
         c.execute('''SELECT * FROM subreddits''')
         result = c.fetchall()
         for r in result:
@@ -61,6 +73,6 @@ if __name__ == "__main__":
     # s.insert_subreddit('programmerhumor')
     s.print_all()
 
-    print(" - LOGS -")
+    print("- LOGS -")
     l = Logs()
     l.print_all()
