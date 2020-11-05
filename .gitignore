@@ -1,0 +1,7 @@
+secrets/
+.pyc
+__pycache__/
+main-old.py
+.vscode/
+subreddits.db
+discord-bot/
