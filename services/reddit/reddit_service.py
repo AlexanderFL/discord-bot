@@ -7,49 +7,49 @@ class RedditService:
                                   client_secret=client_secret,
                                   user_agent=user_agent)
     
-    """
-    Helper function that fetches the post requested by user
-    """
-    def _fetch_post(self, subreddit, limit):
-        if subreddit is None:
-            return reddit.subreddit(self.get_random_subreddit()).random()
-        if limit == -1:
-            return reddit.subreddit(subreddit).random()
+    def fetch_random_post(self, subreddit, counter=1):
+        """
+        Returns a random post from the given subreddit
+        """
+        post = self.reddit.subreddit(subreddit).random()
+        if post == None:
+            raise SubredditDoesNotSupportRandom()
+            
+        if self.is_valid_image_post(post):
+            return post
         else:
-            if limit > 10:
-                limit = 10
-            return reddit.subreddit(subreddit).hot(limit=limit)
-
+            # Counter gets incremented each pass, if it has reached
+            # 20, raise exception to avoid infinite recursive calls
+            if counter == 20:
+                raise NoImagePosts()
+            return self.fetch_random_post(subreddit, counter+1)
     
-    """
-    Fetches the post and validates that it is a image, and that the user
-    is allowed to fetch
-    """
-    def fetch_post(self, subreddit=None, limit=-1):
-        valid_post = False
-        #while not valid_post:
-        #    pass
-
+    def _fetch_many_posts(self, subreddit, limit):
+        """
+        Returns a generator of posts from a given subreddit
+        """
+        if limit > 10:
+            limit = 10
+        return self.reddit.subreddit(subreddit).hot(limit=limit)
     
-    """
-    Checks if post contains 'reddit.com', if it does then it is most likely a text post
-    and returns False, else True
-    """
     def is_valid_image_post(self, post):
-        if submission is None:
-            print("Submission was None")
-            return False
-    
-        url = submission.url
-        if submission.author is None:
+        """
+        Checks if post contains 'reddit.com', if it does then it is most likely a text post
+        and returns False, else True
+        """
+        url = post.url
+        if post.author is None:
             print("Submission did not have an author")
             return False
         if "https://www.reddit.com" in url:
             return False
         else:
             return True
-        
+    
     def is_valid_subreddit(self, sub_name):
+        """
+        Returns True if subreddit is valid, False otherwise
+        """
         try:
             self.reddit.subreddit(sub_name).id
         except NotFound:
@@ -59,3 +59,9 @@ class RedditService:
         except Forbidden:
             return False
         return True
+
+class SubredditDoesNotSupportRandom(Exception):
+    pass
+
+class NoImagePosts(Exception):
+    pass
