@@ -4,7 +4,7 @@ from datetime import datetime
 if __name__ == "__main__":
     from logs_model import Logs
 else:
-    from models.database.logs_model import Logs
+    from services.models.logs_model import Logs
 
 class Subreddits:
     def __init__(self, filename="storage/subreddits.db"):

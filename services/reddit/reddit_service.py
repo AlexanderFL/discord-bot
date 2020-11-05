@@ -1,4 +1,5 @@
 import praw
+from prawcore.exceptions import NotFound, Redirect, Forbidden
 
 class RedditService:
     def __init__(self, client_id, client_secret, user_agent):
@@ -47,3 +48,14 @@ class RedditService:
             return False
         else:
             return True
+        
+    def is_valid_subreddit(self, sub_name):
+        try:
+            self.reddit.subreddit(sub_name).id
+        except NotFound:
+            return False
+        except Redirect:
+            return False
+        except Forbidden:
+            return False
+        return True

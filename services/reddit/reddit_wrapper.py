@@ -1,6 +1,6 @@
 from services.reddit.reddit_service import RedditService
 from services.files.filessystem_service import FileSystem
-from models.subreddit_model import Subreddits
+from services.models.subreddit_model import Subreddits
 from random import randint
 
 class RedditWrapper:
@@ -11,17 +11,56 @@ class RedditWrapper:
         self.reddit_service = RedditService(reddit_id, reddit_secret, "Memebot")
         self.subreddit_models = Subreddits()
     
+    def _subreddit_in_list(self, sub_name):
+        """
+        Returns True if subreddit is in database, False otherwise
+        """
+        subs = self.get_subreddit_list()
+        if sub_name in subs:
+            return True
+        else:
+            return False
+    
     def get_subreddit_list(self):
+        """
+        Returns a list of all the subreddits in the database
+        """
         return self.subreddit_models.fetch_all_subreddits()
     
     def get_random_subreddit(self):
+        """
+        Returns a random subreddit from the database
+        """
         subs = self.get_subreddit_list()
         return subs[randint(0, len(subs) - 1)]
     
-    # TODO: Implement
     def add_subreddit(self, sub_name):
-        pass
+        """
+        Verify that the sub does not already exist in the database and it's a valid
+        subreddit, then add it to the database
+        """
+        if not self.reddit_service.is_valid_subreddit(sub_name):
+            raise InvalidSubredditName()
+        
+        if self._subreddit_in_list(sub_name):
+            raise SubredditAlreadyExists()
 
-    # TODO: Implement
+        self.subreddit_models.insert_subreddit(sub_name)
+
     def remove_subreddit(self, sub_name):
-        pass
+        """
+        Verify that the sub already exists in the database, then remove it
+        """
+        if self._subreddit_in_list(sub_name):
+            self.subreddit_models.remove_subreddit(sub_name)
+        else:
+            raise SubredditNotInList()
+
+class InvalidSubredditName(Exception):
+    pass
+
+class SubredditNotInList(Exception):
+    pass
+
+class SubredditAlreadyExists(Exception):
+    pass
