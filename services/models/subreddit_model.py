@@ -4,7 +4,7 @@ from datetime import datetime
 if __name__ == "__main__":
     from logs_model import Logs
 else:
-    from services.database.logs_model import Logs
+    from models.database.logs_model import Logs
 
 class Subreddits:
     def __init__(self, filename="storage/subreddits.db"):
@@ -61,17 +61,22 @@ class Subreddits:
         conn.close()
         logs.insert_log(str(subreddit) + " was removed")
     
-    def print_all(self):
+    def fetch_all_subreddits(self):
+        """
+        Fetches all of the stored subreddits and returns them in a list
+        """
         conn, c = self._connect()
         c.execute('''SELECT * FROM subreddits''')
-        result = c.fetchall()
-        for r in result:
-            print(r)
+        sub_list = []
+        results = c.fetchall()
+        for result in results:
+            sub_list.append(result[1])
+        return sub_list
 
 if __name__ == "__main__":
     s = Subreddits()
     # s.insert_subreddit('programmerhumor')
-    s.print_all()
+    print(s.fetch_all_subreddits())
 
     print("- LOGS -")
     l = Logs()

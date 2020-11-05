@@ -6,18 +6,6 @@ class RedditService:
                                   client_secret=client_secret,
                                   user_agent=user_agent)
     
-    def get_subreddits(self):
-        pass
-
-    def get_random_subreddit(self):
-        pass
-
-    def add_subreddit(self, subreddit_name):
-        pass
-
-    def remove_subreddit(self):
-        pass
-    
     """
     Helper function that fetches the post requested by user
     """
