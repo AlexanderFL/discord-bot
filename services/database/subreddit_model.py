@@ -31,15 +31,23 @@ class Subreddits:
         conn, c = self.connect()
         argument = (subreddit,)
 
-        create_log = '''INSERT INTO subreddits(subreddit)
+        insert_sub = '''INSERT INTO subreddits(subreddit)
                       VALUES(?)'''
-        c.execute(create_log, argument)
+        c.execute(insert_sub, argument)
         conn.commit()
         conn.close()
         logs.insert_log(str(subreddit) + " was added")
     
     def remove_subreddit(self, subreddit):
-        pass # TODO: Implement
+        logs = Logs()
+        conn, c = self.connect()
+        argument = (subreddit, )
+
+        remove_sub = '''DELETE FROM subreddits WHERE subreddit=? '''
+        c.execute(remove_sub, argument)
+        conn.commit()
+        conn.close()
+        logs.insert_log(str(subreddit) + " was removed")
     
     def print_all(self):
         conn, c = self.connect()
@@ -50,4 +58,9 @@ class Subreddits:
 
 if __name__ == "__main__":
     s = Subreddits()
+    # s.insert_subreddit('programmerhumor')
     s.print_all()
+
+    print(" - LOGS -")
+    l = Logs()
+    l.print_all()

@@ -28,7 +28,6 @@ class Logs:
         if not self.contains_records():
             self.insert_log('Created log table')
     
-    
     def get_date_now(self):
         return str(datetime.now())
     
