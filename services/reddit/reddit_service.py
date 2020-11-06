@@ -1,5 +1,5 @@
 import praw
-from prawcore.exceptions import NotFound, Redirect, Forbidden
+from prawcore.exceptions import NotFound, Redirect, Forbidden, BadRequest
 
 class RedditService:
     def __init__(self, client_id, client_secret, user_agent):
@@ -57,6 +57,8 @@ class RedditService:
         except Redirect:
             return False
         except Forbidden:
+            return False
+        except BadRequest:
             return False
         return True
 

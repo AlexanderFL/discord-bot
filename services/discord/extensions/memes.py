@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from services.reddit.reddit_wrapper import RedditWrapper
+from services.reddit.reddit_wrapper import RedditWrapper, InvalidSubredditName
 from services.reddit.reddit_service import SubredditDoesNotSupportRandom, NoImagePosts
 
 class Memes(commands.Cog):
@@ -21,14 +21,17 @@ class Memes(commands.Cog):
     async def meme(self, ctx, sub_name="None", limit=-1):
         try:
             if sub_name == "None":
-                post = self.reddit.get_random_post(self.reddit.get_random_subreddit())
+                sub_name = self.reddit.get_random_subreddit()
+                post = self.reddit.get_random_post(sub_name)
             else:
                 post = self.reddit.get_random_post(sub_name)
             await ctx.send(self.create_discord_msg(post))
         except SubredditDoesNotSupportRandom:
-            await ctx.send('This subreddit does not support fetching random posts')
+            await ctx.send('r/{0} does not support fetching random posts'.format(sub_name))
         except NoImagePosts:
-            await ctx.send('Didn\'t find any posts that contain images')
+            await ctx.send('Didn\'t find any posts in r/{0} that contained images'.format(sub_name))
+        except InvalidSubredditName:
+            await ctx.send('r/{0} does not exist on reddit.com'.format(sub_name))
     
 def setup(client):
     client.add_cog(Memes(client))

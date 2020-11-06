@@ -60,7 +60,10 @@ class RedditWrapper:
         """
         Return a random post from a random subreddit
         """
-        return self.reddit_service.fetch_random_post(subreddit)
+        if self.reddit_service.is_valid_subreddit(subreddit):
+            return self.reddit_service.fetch_random_post(subreddit)
+        else:
+            raise InvalidSubredditName()
 
 class InvalidSubredditName(Exception):
     pass
