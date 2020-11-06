@@ -2,7 +2,7 @@
 A discord bot that can fetch random image posts from specified subreddits.
 
 ## How to setup
-1. Create a folder at the top called 'secrets' and open it
+1. Create a folder at the root of this project, called 'secrets' and open it
 2. Create a file 'reddit.json' and follow this format with your own client id and client secret
 ```
 {
