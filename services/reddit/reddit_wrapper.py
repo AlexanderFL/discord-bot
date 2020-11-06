@@ -1,6 +1,6 @@
 from services.reddit.reddit_service import RedditService
 from services.files.filessystem_service import FileSystem
-from services.models.subreddit_model import Subreddits
+from models.subreddit_model import Subreddits
 from random import randint
 
 class RedditWrapper:
