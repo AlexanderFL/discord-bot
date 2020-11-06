@@ -55,6 +55,12 @@ class RedditWrapper:
             self.subreddit_models.remove_subreddit(sub_name)
         else:
             raise SubredditNotInList()
+    
+    def get_random_post(self, subreddit):
+        """
+        Return a random post from a random subreddit
+        """
+        return self.reddit_service.fetch_random_post(subreddit)
 
 class InvalidSubredditName(Exception):
     pass
