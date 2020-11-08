@@ -1,12 +1,12 @@
+import os
 import discord
 import discord.abc as abc
 from discord.ext import commands
-import random
 from services.reddit.reddit_wrapper import RedditWrapper
-import os
 
 class DiscordService(commands.Cog):
     def __init__(self):
+        self.client = discord.Client()
         self.bot = commands.Bot(command_prefix='!')
         self.reddit = RedditWrapper()
     
@@ -17,16 +17,12 @@ class DiscordService(commands.Cog):
         for filename in os.listdir('./services/discord/extensions'):
             if filename.endswith('.py'):
                 self.bot.load_extension(f'services.discord.extensions.{filename[:-3]}')
-
+                print("Loaded extension: {0}".format(filename[:-3]))
+        
     def run_bot(self, token):
         """
         Gets the discord bot running
         """
+        print("Starting the discord bot...")
+        self.load()
         self.bot.run(token)
-
-    @commands.command()
-    async def ping(self, ctx):
-        """
-        Example on implementing commands
-        """
-        await ctx.send('Pong!')
