@@ -1,28 +1,31 @@
 import praw
-from prawcore.exceptions import NotFound, Redirect, Forbidden, BadRequest
+from prawcore.exceptions import NotFound, Redirect, Forbidden, BadRequest, RequestException
 
 class RedditService:
     def __init__(self, client_id, client_secret, user_agent):
         self.reddit = praw.Reddit(client_id=client_id,
                                   client_secret=client_secret,
                                   user_agent=user_agent)
-    
+
     def fetch_random_post(self, subreddit, counter=1):
         """
         Returns a random post from the given subreddit
         """
-        post = self.reddit.subreddit(subreddit).random()
-        if post == None:
-            raise SubredditDoesNotSupportRandom()
-            
-        if self.is_valid_image_post(post):
-            return post
-        else:
-            # Counter gets incremented each pass, if it has reached
-            # 20, raise exception to avoid infinite recursive calls
-            if counter == 20:
-                raise NoImagePosts()
-            return self.fetch_random_post(subreddit, counter+1)
+        try:
+            post = self.reddit.subreddit(subreddit).random()
+            if post == None:
+                raise SubredditDoesNotSupportRandom()
+                
+            if self.is_valid_image_post(post):
+                return post
+            else:
+                # Counter gets incremented each pass, if it has reached
+                # 20, raise exception to avoid infinite recursive calls
+                if counter == 20:
+                    raise NoImagePosts()
+                return self.fetch_random_post(subreddit, counter+1)
+        except RequestException:
+            raise RequestException
     
     def _fetch_many_posts(self, subreddit, limit):
         """
