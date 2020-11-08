@@ -4,6 +4,7 @@ from prawcore.exceptions import RequestException
 from models.subreddit_model import Subreddits
 from random import randint
 
+
 class RedditWrapper:
     def __init__(self):
         secret = FileSystem.read_json("secrets/reddit.json")
@@ -11,7 +12,7 @@ class RedditWrapper:
         reddit_secret = secret['client_secret']
         self.reddit_service = RedditService(reddit_id, reddit_secret, "Memebot")
         self.subreddit_models = Subreddits()
-    
+
     def _subreddit_in_list(self, sub_name):
         """
         Returns True if subreddit is in database, False otherwise
@@ -21,20 +22,20 @@ class RedditWrapper:
             return True
         else:
             return False
-    
+
     def get_subreddit_list(self):
         """
         Returns a list of all the subreddits in the database
         """
         return self.subreddit_models.fetch_all_subreddits()
-    
+
     def get_random_subreddit(self):
         """
         Returns a random subreddit from the database
         """
         subs = self.get_subreddit_list()
         return subs[randint(0, len(subs) - 1)]
-    
+
     def add_subreddit(self, sub_name):
         """
         Verify that the sub does not already exist in the database and it's a valid
@@ -42,10 +43,8 @@ class RedditWrapper:
         """
         if not self.reddit_service.is_valid_subreddit(sub_name):
             raise InvalidSubredditName()
-        
         if self._subreddit_in_list(sub_name):
             raise SubredditAlreadyExists()
-
         self.subreddit_models.insert_subreddit(sub_name)
 
     def remove_subreddit(self, sub_name):
@@ -56,7 +55,7 @@ class RedditWrapper:
             self.subreddit_models.remove_subreddit(sub_name)
         else:
             raise SubredditNotInList()
-    
+
     def get_random_post(self, subreddit):
         """
         Return a random post from a random subreddit
@@ -75,11 +74,14 @@ class RedditWrapper:
             self.reddit_service = RedditService(reddit_id, reddit_secret, "Memebot")
             self.get_random_post(subreddit)
 
+
 class InvalidSubredditName(Exception):
     pass
 
+
 class SubredditNotInList(Exception):
     pass
+
 
 class SubredditAlreadyExists(Exception):
     pass

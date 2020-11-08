@@ -1,6 +1,7 @@
 import praw
 from prawcore.exceptions import NotFound, Redirect, Forbidden, BadRequest, RequestException
 
+
 class RedditService:
     def __init__(self, client_id, client_secret, user_agent):
         self.reddit = praw.Reddit(client_id=client_id,
@@ -13,9 +14,9 @@ class RedditService:
         """
         try:
             post = self.reddit.subreddit(subreddit).random()
-            if post == None:
+            if post is None:
                 raise SubredditDoesNotSupportRandom()
-                
+
             if self.is_valid_image_post(post):
                 return post
             else:
@@ -26,7 +27,7 @@ class RedditService:
                 return self.fetch_random_post(subreddit, counter+1)
         except RequestException:
             raise RequestException
-    
+
     def _fetch_many_posts(self, subreddit, limit):
         """
         Returns a generator of posts from a given subreddit
@@ -34,7 +35,7 @@ class RedditService:
         if limit > 10:
             limit = 10
         return self.reddit.subreddit(subreddit).hot(limit=limit)
-    
+
     def is_valid_image_post(self, post):
         """
         Checks if post contains 'reddit.com', if it does then it is most likely a text post
@@ -48,7 +49,7 @@ class RedditService:
             return False
         else:
             return True
-    
+
     def is_valid_subreddit(self, sub_name):
         """
         Returns True if subreddit is valid, False otherwise
@@ -65,8 +66,10 @@ class RedditService:
             return False
         return True
 
+
 class SubredditDoesNotSupportRandom(Exception):
     pass
+
 
 class NoImagePosts(Exception):
     pass
