@@ -73,7 +73,6 @@ class RedditWrapper:
             reddit_id = secret['client_id']
             reddit_secret = secret['client_secret']
             self.reddit_service = RedditService(reddit_id, reddit_secret, "Memebot")
-        finally:
             self.get_random_post(subreddit)
 
 class InvalidSubredditName(Exception):
