@@ -1,5 +1,6 @@
 from services.reddit.reddit_service import RedditService
 from services.files.filessystem_service import FileSystem
+from prawcore.exceptions import RequestException
 from models.subreddit_model import Subreddits
 from random import randint
 
@@ -60,10 +61,20 @@ class RedditWrapper:
         """
         Return a random post from a random subreddit
         """
-        if self.reddit_service.is_valid_subreddit(subreddit):
-            return self.reddit_service.fetch_random_post(subreddit)
-        else:
-            raise InvalidSubredditName()
+        try:
+            if self.reddit_service.is_valid_subreddit(subreddit):
+                return self.reddit_service.fetch_random_post(subreddit)
+            else:
+                raise InvalidSubredditName()
+        except RequestException:
+            # If the bot has been inactive for a long time, reddit can throw
+            # an RequestException: Read timed out
+            secret = FileSystem.read_json("secrets/reddit.json")
+            reddit_id = secret['client_id']
+            reddit_secret = secret['client_secret']
+            self.reddit_service = RedditService(reddit_id, reddit_secret, "Memebot")
+        finally:
+            self.get_random_post(subreddit)
 
 class InvalidSubredditName(Exception):
     pass
