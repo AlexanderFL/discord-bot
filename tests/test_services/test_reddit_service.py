@@ -5,12 +5,6 @@ from services.files.filessystem_service import FileSystem
 from unittest.mock import Mock
 
 
-class Post:
-    def __init__(self):
-        self.url = 'https://i.redd.it/apa15s1bmvx51.jpg'
-        self.author = 'u/-Xyriene-'
-
-
 # TODO: Create a service stub that would fake a connection to reddit.com?
 class TestRedditService(unittest.TestCase):
     def setUp(self):
