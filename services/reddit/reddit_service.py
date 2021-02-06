@@ -3,6 +3,12 @@ from prawcore.exceptions import NotFound, Redirect, Forbidden, BadRequest, Reque
 
 
 class RedditService:
+    """
+    This class handles all of the requests out to reddit through praw, 
+    fetching posts, and checking if they're valid for the context they're used in.
+
+    Only the wrapper should talk to this class.
+    """
     def __init__(self, client_id, client_secret, user_agent):
         self.reddit = praw.Reddit(client_id=client_id,
                                   client_secret=client_secret,

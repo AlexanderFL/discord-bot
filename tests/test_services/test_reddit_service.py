@@ -5,7 +5,7 @@ from services.files.filessystem_service import FileSystem
 from unittest.mock import Mock
 
 
-# TODO: Create a service stub that would fake a connection to reddit.com?
+# TODO: Create a service stub that would fake a connection to reddit.com
 class TestRedditService(unittest.TestCase):
     def setUp(self):
         info = FileSystem.read_json('secrets/reddit.json')

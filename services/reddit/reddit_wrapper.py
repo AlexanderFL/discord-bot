@@ -6,6 +6,9 @@ from random import randint
 
 
 class RedditWrapper:
+    """
+    This class wraps the reddit service class
+    """
     def __init__(self):
         secret = FileSystem.read_json("secrets/reddit.json")
         reddit_id = secret['client_id']
