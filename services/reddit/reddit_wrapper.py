@@ -10,7 +10,7 @@ class RedditWrapper:
         secret = FileSystem.read_json("secrets/reddit.json")
         reddit_id = secret['client_id']
         reddit_secret = secret['client_secret']
-        self.reddit_service = RedditService(reddit_id, reddit_secret, "Memebot")
+        self.reddit_service = RedditService(reddit_id, reddit_secret, "Memebot v0.1.2 by u/thealexknows")
         self.subreddit_models = Subreddits()
 
     def _subreddit_in_list(self, sub_name):
