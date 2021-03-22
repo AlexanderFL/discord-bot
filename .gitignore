@@ -5,3 +5,7 @@ main-old.py
 .vscode/
 subreddits.db
 discord-bot/
+storage/
+htmlcov/
+Dockerfile
+.coverage
