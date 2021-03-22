@@ -1,15 +1,12 @@
 import sqlite3
-from datetime import datetime
+from models.logs_model import Logs
 
-
-class Logs:
-    """
-    TODO: Maybe this class can be static?
-    """
-    def __init__(self, filename="storage/subreddits.db"):
+class Games:
+    def __init__(self, filename="storage/games.db"):
         self.filename = filename
         self._create_default_table()
-
+        self.logs = Logs()
+    
     def _connect(self):
         """
         Returns the connection and cursor to the database file
@@ -25,57 +22,52 @@ class Logs:
         """
         conn, c = self._connect()
 
-        create_log_table = ''' CREATE TABLE IF NOT EXISTS logs
+        create_log_table = ''' CREATE TABLE IF NOT EXISTS games
                                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                message TEXT NOT NULL,
-                                date_added TEXT NOT NULL)'''
+                                game TEXT NOT NULL)'''
         c.execute(create_log_table)
         conn.commit()
         conn.close()
-
-        if not self.contains_records():
-            self.insert_log('Created log table')
-
-    def get_date_now(self):
+    
+    def insert_game(self, game: str):
         """
-        Returns the datetime now as a string
-        """
-        return str(datetime.now())
-
-    def insert_log(self, message: str):
-        """
-        Insert a log into the table from the given string parameter
+        Insert a game into the table from the given string parameter
         """
         conn, c = self._connect()
-        argument = (message, self.get_date_now())
 
-        create_log = '''INSERT INTO logs(message, date_added)
-                      VALUES(?, ?)'''
-        c.execute(create_log, argument)
+        args = (game,)
+
+        create_game = '''INSERT INTO games(game)
+                      VALUES(?)'''
+        c.execute(create_game, args)
         conn.commit()
         conn.close()
-
+    
     def contains_records(self):
         """
         Returns True or False if the table contains any entries
         False if entries dont exist, True otherwise
         """
         conn, c = self._connect()
-        c.execute('''SELECT COUNT(*) FROM logs''')
+        c.execute('''SELECT COUNT(*) FROM games''')
         result = c.fetchall()
         if result[0][0] == 0:
             return False
         else:
             return True
-
-    def print_all(self):
+    
+    def fetch_all(self):
+        """
+        Fetch all games from the database
+        Returns a list of strings
+        """
         conn, c = self._connect()
-        c.execute('''SELECT * FROM logs''')
+
+        query = '''SELECT * FROM games'''
+        c.execute(query)
         result = c.fetchall()
+
+        return_list = []
         for r in result:
-            print(r)
-
-
-if __name__ == "__main__":
-    logs = Logs()
-    logs.print_all()
+            return_list.append(r[1])
+        return return_list
