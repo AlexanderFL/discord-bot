@@ -14,10 +14,21 @@ class DiscordService(commands.Cog):
         """
         Load the extensions located in the extensions/ folder
         """
-        for filename in os.listdir('./services/discord/extensions'):
-            if filename.endswith('.py'):
-                self.bot.load_extension(f'services.discord.extensions.{filename[:-3]}')
-                print("Loaded extension: {0}".format(filename[:-3]))
+
+        dir_name = os.path.join(os.curdir, "services/discord/extensions")
+        nr_of_extensions = 0
+        # Get all subdirectories of extensions
+        subdirectories = filter(os.path.isdir, [os.path.join(dir_name,x) for x in os.listdir(dir_name)])
+        for dirname in subdirectories:
+            dirname_lastpart = os.path.basename(os.path.normpath(dirname))
+            # Get all files inside the subdirectory
+            for filename in os.listdir(dirname):
+                if filename == "main.py":
+                    print("Loading extension '{0}'".format(dirname_lastpart))
+                    self.bot.load_extension(f'services.discord.extensions.{dirname_lastpart}.{filename[:-3]}')
+                    nr_of_extensions += 1
+        # Show how many extensisons were loaded
+        print("Loaded {0} extensions".format(nr_of_extensions))
 
     def run_bot(self, token):
         """
