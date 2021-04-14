@@ -1,11 +1,5 @@
 import sqlite3
 
-if __name__ == "__main__":
-    from logs_model import Logs
-else:
-    from models.logs_model import Logs
-
-
 class Subreddits:
     def __init__(self, filename="storage/subreddits.db"):
         self.filename = filename
@@ -36,7 +30,6 @@ class Subreddits:
         """
         Insert a subreddit into the table from the given string parameter
         """
-        logs = Logs()
         conn, c = self._connect()
         argument = (subreddit,)
 
@@ -45,13 +38,11 @@ class Subreddits:
         c.execute(insert_sub, argument)
         conn.commit()
         conn.close()
-        logs.insert_log(str(subreddit) + " was added")
 
     def remove_subreddit(self, subreddit: str):
         """
         Remove a subreddit from the table from the given string parameter
         """
-        logs = Logs()
         conn, c = self._connect()
         argument = (subreddit, )
 
@@ -59,7 +50,6 @@ class Subreddits:
         c.execute(remove_sub, argument)
         conn.commit()
         conn.close()
-        logs.insert_log(str(subreddit) + " was removed")
 
     def fetch_all_subreddits(self):
         """
@@ -79,6 +69,3 @@ if __name__ == "__main__":
     # s.insert_subreddit('programmerhumor')
     print(subsreddits.fetch_all_subreddits())
 
-    print("- LOGS -")
-    logs = Logs()
-    logs.print_all()

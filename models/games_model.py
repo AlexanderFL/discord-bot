@@ -1,11 +1,9 @@
 import sqlite3
-from models.logs_model import Logs
 
 class Games:
     def __init__(self, filename="storage/games.db"):
         self.filename = filename
         self._create_default_table()
-        self.logs = Logs()
     
     def _connect(self):
         """
